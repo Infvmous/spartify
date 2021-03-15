@@ -28,8 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'crispy_forms',
-
     'rooms',
     'pages',
     'spotify',
@@ -115,8 +113,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID') 

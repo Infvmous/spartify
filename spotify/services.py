@@ -82,8 +82,7 @@ def user_authenticated_in_spotify(session_key: str) -> bool:
 
 def spotify_logout(session_key: str) -> NoReturn:
     """Deletes user spotify tokens"""
-    tokens = _get_user_tokens(session_key)
-    tokens.delete()
+    _get_user_tokens(session_key).delete()
 
 
 def _get_user_tokens(session_key: str) -> Dict:
