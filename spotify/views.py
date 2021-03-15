@@ -1,7 +1,5 @@
-import requests
-
-from django.shortcuts import redirect
-from django.http import JsonResponse
+from django.shortcuts import redirect, reverse
+from django.http import JsonResponse, HttpResponseRedirect
 
 from .services import (
     create_session_if_not_exists, 
@@ -18,20 +16,18 @@ def spotify_authorize_view(request):
 
 def spotify_authorization_callback(request):
     authorization_code = request.GET.get('code')
+    # TODO: handle authorization error
     authorization_error = request.GET.get('error')
 
     response = get_access_and_refresh_tokens(authorization_code)
 
-    access_token = response.get('access_token')
-    token_type = response.get('token_type')
-    refresh_token = response.get('refresh_token')
-    expires_in = response.get('expires_in')
-    error = response.get('error')
-
     create_session_if_not_exists(request)
     update_or_create_user_tokens(
-        request.session.session_key, refresh_token, access_token, 
-        token_type, expires_in)
-    return JsonResponse({'status': 'ok', 'msg': 'you have been authorized'})
+        session_key=request.session.session_key, 
+        refresh_token=response.get('refresh_token'),
+        access_token=response.get('access_token'),
+        token_type=response.get('token_type'),
+        expires_in=response.get('expires_in'))
+    return HttpResponseRedirect(reverse('rooms_home'))
 
    

@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views import spotify_authorize_view, spotify_authorization_callback
+from .views import (
+    spotify_authorize_view, spotify_authorization_callback)
 
 
 urlpatterns = [
