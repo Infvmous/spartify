@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>Join room</h1>
+    <form action="{% url 'room_join' %}" method="post">
+        {% csrf_token %}
+        <input type="text">
+        <button type="submit">Join a room</button>
+    </form>
+
+    <br>
+    <h1>Create room</h1>
+    <form action="{% url 'room_create' %}" method="post">
+        {% csrf_token %}
+        {{ room_create_form.as_p }}
+        <button type="submit">Create a room</button>
+    </form>
+
+    <br>
+    <a href="{% url 'spotify_logout' %}">Log out</a>
+{% endblock content %}

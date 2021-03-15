@@ -21,14 +21,15 @@ def create_session_if_not_exists(request) -> NoReturn:
 
 def get_spotify_authorize_url() -> str:
     """Returns spotify authorize url"""
-    return requests.Request(
-        'GET', 'https://accounts.spotify.com/authorize', 
+    return requests.get(
+        'https://accounts.spotify.com/authorize', 
         params={
             'scope': SPOTIFY_SCOPES,
             'response_type': 'code',
             'redirect_uri': SPOTIFY_REDIRECT_URI,
-            'client_id': SPOTIFY_CLIENT_ID
-        }).prepare().url
+            'client_id': SPOTIFY_CLIENT_ID,
+            'show_dialog': True
+        }).url
 
 
 def get_access_and_refresh_tokens(authorization_code: str) -> Dict:
@@ -79,6 +80,12 @@ def user_authenticated_in_spotify(session_key: str) -> bool:
     return False
 
 
+def spotify_logout(session_key: str) -> NoReturn:
+    """Deletes user spotify tokens"""
+    tokens = _get_user_tokens(session_key)
+    tokens.delete()
+
+
 def _get_user_tokens(session_key: str) -> Dict:
     """Returns user tokens if exists"""
     user_tokens = SpotifyToken.objects.filter(user=session_key)
@@ -88,7 +95,7 @@ def _get_user_tokens(session_key: str) -> Dict:
 
 def _refresh_user_tokens(session_key: str) -> NoReturn:
     """Refreshes user tokens"""
-    refresh_token = _get_user_tokens(session_key).refresh_token
+    refresh_token = _get_user_tokens(session_key)[0].refresh_token
     response = requests.post(
         'https://accounts.spotify.com/api/token', data={
             'grant_type': 'refresh_token',

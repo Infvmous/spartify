@@ -5,7 +5,8 @@ from .services import (
     create_session_if_not_exists, 
     update_or_create_user_tokens,
     get_spotify_authorize_url,
-    get_access_and_refresh_tokens
+    get_access_and_refresh_tokens,
+    spotify_logout
 )
 
 
@@ -29,5 +30,11 @@ def spotify_authorization_callback(request):
         token_type=response.get('token_type'),
         expires_in=response.get('expires_in'))
     return HttpResponseRedirect(reverse('rooms_home'))
+
+
+def spotify_logout_view(request):
+    spotify_logout(request.session.session_key)
+    return HttpResponseRedirect(reverse('home'))
+
 
    
