@@ -3,6 +3,7 @@ from datetime import timedelta
 from typing import NoReturn, Dict
 
 from django.utils import timezone
+from django.http import HttpRequest
 
 from .models import SpotifyToken
 from config.settings import (
@@ -13,7 +14,7 @@ from config.settings import (
 )
 
 
-def create_session_if_not_exists(request) -> NoReturn:
+def create_session_if_not_exists(request: HttpRequest) -> NoReturn:
     """Create user session"""
     if not request.session.exists(request.session.session_key):
         request.session.create()

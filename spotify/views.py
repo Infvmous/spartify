@@ -31,13 +31,13 @@ def spotify_authorization_callback(request):
         access_token=response.get('access_token'),
         token_type=response.get('token_type'),
         expires_in=response.get('expires_in'))
-    return HttpResponseRedirect(reverse('rooms_home'))
+    return HttpResponseRedirect(reverse('home'))
 
 
 @require_GET
 def spotify_logout_view(request):
     spotify_logout(request.session.session_key)
-    return HttpResponseRedirect(reverse('home'))
+    return HttpResponseRedirect(reverse('login'))
 
 
    

@@ -1,5 +1,22 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-    <a href="{% url 'spotify_authorize' %}" class="btn btn-success">Log in with Spotify</a>
+    <h1>Join room</h1>
+    <form action="{% url 'room_join' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" class="form-control" name="code">
+        </div>
+        <button type="submit" class="btn btn-success">Join a room</button>
+    </form>
+
+    <h1>Create room</h1>
+    <form action="{% url 'room_create' %}" method="post">
+        {% csrf_token %}
+        {{ room_form|crispy }}
+        <button type="submit" class="btn btn-success">Create a room</button>
+    </form>
+
+    <a href="{% url 'spotify_logout' %}">Log out</a>
 {% endblock content %}

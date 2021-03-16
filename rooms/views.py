@@ -1,22 +1,30 @@
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_POST
 
-from .forms import RoomCreateForm
-from spotify.decorators import spotify_auth_required
-
-
-@spotify_auth_required
-def rooms_home_page_view(request):
-    return render(request, 'rooms_home.html', 
-        context={'room_create_form': RoomCreateForm(request.POST or None)})
+from spotify.decorators import spotify_login_required
+from .services import room_get_created_or_existing_code
+from .forms import RoomForm
+from .models import Room
 
 
-@spotify_auth_required
+@require_POST
+@spotify_login_required()
 def room_create_view(request):
-    return JsonResponse({'create': 'ok'})
+    return redirect('room', code=room_get_created_or_existing_code(request))
 
-
-@spotify_auth_required
+ 
+@require_POST
+@spotify_login_required()
 def room_join_view(request):
-    return JsonResponse({'join': 'ok'})
+    # If room exists join
+    code = request.POST.get('code')
+    if Room.objects.filter(code=code).exists():
+        return redirect('room', code=code)
+    else:
+        return redirect('home')
 
+
+@spotify_login_required()
+def room_view(request, code):
+    return JsonResponse({'room': code})

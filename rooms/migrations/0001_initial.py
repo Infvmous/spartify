@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Room',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(default=rooms.services.generate_unique_room_code, max_length=8, unique=True)),
+                ('code', models.CharField(default=rooms.models.generate_unique_room_code, max_length=8, unique=True)),
                 ('host', models.CharField(max_length=64, unique=True)),
                 ('guest_can_pause', models.BooleanField(default=False)),
                 ('votes_to_skip_song', models.IntegerField(default=1)),
