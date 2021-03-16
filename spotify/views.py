@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, reverse
 from django.http import JsonResponse, HttpResponseRedirect
+from django.views.decorators.http import require_GET
 
 from .services import (
     create_session_if_not_exists, 
@@ -10,11 +11,12 @@ from .services import (
 )
 
 
+@require_GET
 def spotify_authorize_view(request):
-    if request.method == 'GET':
-        return redirect(get_spotify_authorize_url())
+    return redirect(get_spotify_authorize_url())
 
 
+@require_GET
 def spotify_authorization_callback(request):
     authorization_code = request.GET.get('code')
     # TODO: handle authorization error
@@ -32,6 +34,7 @@ def spotify_authorization_callback(request):
     return HttpResponseRedirect(reverse('rooms_home'))
 
 
+@require_GET
 def spotify_logout_view(request):
     spotify_logout(request.session.session_key)
     return HttpResponseRedirect(reverse('home'))

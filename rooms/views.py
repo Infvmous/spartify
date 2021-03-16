@@ -1,24 +1,22 @@
-from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import reverse, render
+from django.http import JsonResponse
+from django.shortcuts import render
 
-from spotify.services import user_authenticated_in_spotify
 from .forms import RoomCreateForm
+from spotify.decorators import spotify_auth_required
 
 
+@spotify_auth_required
 def rooms_home_page_view(request):
-    if user_authenticated_in_spotify(request.session.session_key):
-        return render(request, 'rooms_home.html', 
-            context={'room_create_form': RoomCreateForm(request.POST or None)})
-    return HttpResponseRedirect(reverse('home'))
+    return render(request, 'rooms_home.html', 
+        context={'room_create_form': RoomCreateForm(request.POST or None)})
 
 
+@spotify_auth_required
 def room_create_view(request):
-    if user_authenticated_in_spotify(request.session.session_key):
-        return render(request, 'room_create.html')
-    return HttpResponseRedirect(reverse('home'))
+    return JsonResponse({'create': 'ok'})
 
 
-
+@spotify_auth_required
 def room_join_view(request):
     return JsonResponse({'join': 'ok'})
 
