@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.db.models import QuerySet
 
 from .models import Room
-from .forms import RoomCreateForm, RoomJoinForm
+from .forms import RoomForm, RoomJoinForm
 
 
 def room_create_or_get_existing_code(request: HttpRequest) -> Room.code:
@@ -23,10 +23,10 @@ def room_filter_by_host(session_key: Room.host) -> QuerySet:
 
 def room_create(request: HttpRequest) -> Room.code:
     """
-    Creating new room using RoomCreateForm,
+    Creating new room using RoomForm,
     Returns created room code
     """
-    form = RoomCreateForm(request.POST)
+    form = RoomForm(request.POST)
     if form.is_valid():
         room = form.save(commit=False)
         room.host = request.session.session_key

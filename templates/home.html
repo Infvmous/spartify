@@ -12,7 +12,7 @@
     <h1>Create room</h1>
     <form action="{% url 'room_create' %}" method="post">
         {% csrf_token %}
-        {{ room_create_form|crispy }}
+        {{ room_form|crispy }}
         <button type="submit" class="btn btn-success">Create a room</button>
     </form>
 
