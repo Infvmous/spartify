@@ -5,16 +5,14 @@
     <h1>Join room</h1>
     <form action="{% url 'room_join' %}" method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <input type="text" class="form-control" name="code">
-        </div>
+        {{ room_join_form|crispy }}
         <button type="submit" class="btn btn-success">Join a room</button>
     </form>
 
     <h1>Create room</h1>
     <form action="{% url 'room_create' %}" method="post">
         {% csrf_token %}
-        {{ room_form|crispy }}
+        {{ room_create_form|crispy }}
         <button type="submit" class="btn btn-success">Create a room</button>
     </form>
 

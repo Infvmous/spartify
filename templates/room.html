@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Room page</h1>
+    <h1>Room {{ code }}</h1>
+    {% if host %}
+        <h3>You're host</h3>
+    {% endif %}
+    <p>votes to skip song: {{ votes_to_skip_song }}</p>
+    <p>guest can pause: {{ guest_can_pause }}</p>
 {% endblock content %}
