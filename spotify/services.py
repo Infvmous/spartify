@@ -52,10 +52,10 @@ def update_or_create_user_tokens(
         refresh_token: SpotifyToken.refresh_token,
         access_token: SpotifyToken.access_token,
         token_type: SpotifyToken.token_type,
-        expires_in: SpotifyToken.expires_in) -> NoReturn:
+        expires_in_seconds: int) -> NoReturn:
     """Update or create user Spotify tokens"""
     tokens = _get_user_tokens(session_key)
-    expires_in = timezone.now() + timedelta(seconds=expires_in)
+    expires_in = timezone.now() + timedelta(seconds=expires_in_seconds)
     if tokens:
         tokens.update(refresh_token=refresh_token, access_token=access_token,
                       token_type=token_type, expires_in=expires_in)

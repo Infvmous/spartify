@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <a href="{% url 'spotify_authorize' %}" class="btn btn-success">Log in with Spotify</a>
+    <div class="card text-center center">
+        <div class="card-body">
+            <h5 class="card-title">Welcome to Spartify!</h5>
+            <p class="card-text">Proceed to Spotify to start listening music with friends</p>
+            <a href="{% url 'spotify_authorize' %}" class="btn btn-success">Log in with Spotify</a>
+        </div> 
+    </div>
 {% endblock content %}

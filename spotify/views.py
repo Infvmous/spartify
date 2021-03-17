@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
 from django.views.decorators.http import require_GET
 
 from .services import (
@@ -10,7 +11,7 @@ from .services import (
 
 @require_GET
 def spotify_authorize_view(request):
-    return redirect(spotify_get_authorize_url())
+    return HttpResponseRedirect(spotify_get_authorize_url())
 
 
 @require_GET

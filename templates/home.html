@@ -2,19 +2,21 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <h1>Join room</h1>
-    <form action="{% url 'room_join' %}" method="post">
-        {% csrf_token %}
-        {{ room_join_form|crispy }}
-        <button type="submit" class="btn btn-success">Join a room</button>
-    </form>
-
-    <h1>Create room</h1>
-    <form action="{% url 'room_create' %}" method="post">
-        {% csrf_token %}
-        {{ room_form|crispy }}
-        <button type="submit" class="btn btn-success">Create a room</button>
-    </form>
-
-    <a href="{% url 'spotify_logout' %}">Log out</a>
+    <div class="card text-center">
+        <div class="card-body">
+            <form action="{% url 'room_join' %}" method="post">
+                {% csrf_token %}
+                {{ room_join_form|crispy }}
+                <button type="submit" class="btn btn-success">Join a room</button>
+            </form>
+        </div>
+        <div class="card-body">
+            <form action="{% url 'room_create' %}" method="post">
+                {% csrf_token %}
+                {{ room_form|crispy }}
+                <button type="submit" class="btn btn-success">Create a room</button>
+            </form>
+        </div>
+        <a href="{% url 'spotify_logout' %}" class="btn btn-danger">Change Spotify account</a>
+    </div>
 {% endblock content %}
