@@ -1,4 +1,5 @@
 import requests
+from requests import Response
 from datetime import timedelta
 
 from django.utils import timezone
@@ -12,6 +13,25 @@ from config.settings import (
     SPOTIFY_CLIENT_SECRET,
     SPOTIFY_SCOPES
 )
+
+SPOTIFY_API_URL = 'https://api.spotify.com/v1/me/'
+
+
+def spotify_send_request(
+        session_key: Room.host,
+        endpoint: str,
+        method: str = 'GET') -> Response:
+    """
+    Sending http request to Spotify Web API
+    """
+    tokens = _get_user_tokens(session_key)[0]
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + tokens.access_token
+    }
+    url = SPOTIFY_API_URL + endpoint
+    response = requests.request(method, url, headers=headers)
+    return response
 
 
 def create_session_if_not_exists(request: HttpRequest) -> None:

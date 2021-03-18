@@ -13,13 +13,15 @@ from .services import (
 @require_POST
 @spotify_login_required()
 def room_create_view(request):
-    return redirect('room', code=room_update_or_create(request))
+    room = room_update_or_create(request)
+    return room_join(request, room.code)
 
 
 @require_POST
 @spotify_login_required()
 def room_join_view(request):
-    return room_join(request)
+    code = request.POST.get('code')
+    return room_join(request, code)
 
 
 @spotify_login_required()
