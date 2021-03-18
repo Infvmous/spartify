@@ -1,6 +1,5 @@
 import requests
 from datetime import timedelta
-from typing import NoReturn
 
 from django.utils import timezone
 from django.http import HttpRequest
@@ -15,7 +14,7 @@ from config.settings import (
 )
 
 
-def create_session_if_not_exists(request: HttpRequest) -> NoReturn:
+def create_session_if_not_exists(request: HttpRequest) -> None:
     """Create user session"""
     if not request.session.exists(request.session.session_key):
         request.session.create()
@@ -52,7 +51,7 @@ def update_or_create_user_tokens(
         refresh_token: SpotifyToken.refresh_token,
         access_token: SpotifyToken.access_token,
         token_type: SpotifyToken.token_type,
-        expires_in_seconds: int) -> NoReturn:
+        expires_in_seconds: int) -> None:
     """Update or create user Spotify tokens"""
     tokens = _get_user_tokens(session_key)
     expires_in = timezone.now() + timedelta(seconds=expires_in_seconds)
@@ -67,18 +66,18 @@ def update_or_create_user_tokens(
 
 
 def user_authenticated_in_spotify(session_key: Room.host) -> bool:
-    """Returns True if user spotify tokens exists and False if not, also
-    updates it"""
+    """Returns True if user has spotify tokens and update them if
+    it's expired, False if user is not authenticated"""
     tokens = _get_user_tokens(session_key)
     if tokens:
         expiry = tokens[0].expires_in
         if expiry <= timezone.now():
-            _refresh_user_tokens(session_key)
+            _spotify_refresh_user_tokens(session_key)
         return True
     return False
 
 
-def spotify_logout(session_key: Room.host) -> NoReturn:
+def spotify_logout(session_key: Room.host) -> None:
     """Deletes user spotify tokens"""
     _get_user_tokens(session_key).delete()
 
@@ -90,7 +89,7 @@ def _get_user_tokens(session_key: Room.host) -> SpotifyToken:
         return user_tokens
 
 
-def _refresh_user_tokens(session_key: Room.host) -> NoReturn:
+def _spotify_refresh_user_tokens(session_key: Room.host) -> None:
     """Refreshes user tokens"""
     refresh_token = _get_user_tokens(session_key)[0].refresh_token
     response = requests.post(
@@ -100,15 +99,17 @@ def _refresh_user_tokens(session_key: Room.host) -> NoReturn:
             'client_id': SPOTIFY_CLIENT_ID,
             'client_secret': SPOTIFY_CLIENT_SECRET
         }).json()
-    access_token = response.get('access_token')
-    token_type = response.get('token_type')
-    expires_in = response.get('expires_in')
     update_or_create_user_tokens(
         session_key, refresh_token, response.get('access_token'),
         response.get('token_type'), response.get('expires_in'))
 
 
-def spotify_handle_authorization_callback(request: HttpRequest) -> NoReturn:
+def spotify_handle_authorization_callback(request: HttpRequest) -> None:
+    """
+    Getting access and refresh tokens by Spotify auth code received
+    after user authorization, creating new user session if it does
+    not exist and updating or creating user tokens
+    """
     authorization_code = request.GET.get('code')
     # TODO: handle authorization error
     authorization_error = request.GET.get('error')

@@ -1,24 +1,41 @@
 from django.http import HttpRequest
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.db.models import QuerySet
 
 from .models import Room
 from .forms import RoomForm, RoomJoinForm
 
 
-def room_create_or_get_existing_code(request: HttpRequest) -> Room.code:
+def room_create_or_update(request: HttpRequest) -> Room.code:
     """
     Creating new room if it doesn't exist,
     Return created room code or existing one
     """
-    room = room_filter_by_host(request.session.session_key)
+    room = room_get_if_exist(request.session.session_key)
+    return room_update(request, room[0]) if room else room_create(request)
+
+
+def room_get_if_exist(session_key: Room.host) -> QuerySet[Room]:
+    """
+    Returns QuerySet object with Room object inside if exist
+    """
+    room = Room.objects.filter(host=session_key)
     if room.exists():
-        return room[0].code
-    return room_create(request)
+        return room
 
 
-def room_filter_by_host(session_key: Room.host) -> QuerySet:
-    return Room.objects.filter(host=session_key)
+def room_update(request: HttpRequest, room: Room) -> Room.code:
+    """
+    Updating room guest_can_pause and votes_to_skip_song fields
+    Return room code
+    """
+    form = RoomForm(request.POST)
+    if form.is_valid():
+        room.guest_can_pause = form.cleaned_data.get('guest_can_pause')
+        room.votes_to_skip_song = form.cleaned_data.get(
+            'votes_to_skip_song')
+        room.save(update_fields=['guest_can_pause', 'votes_to_skip_song'])
+        return room.code
 
 
 def room_create(request: HttpRequest) -> Room.code:

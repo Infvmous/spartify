@@ -3,7 +3,7 @@ from django.views.decorators.http import require_POST
 
 from spotify.decorators import spotify_login_required
 from .services import (
-    room_create_or_get_existing_code,
+    room_create_or_update,
     room_join,
     current_user_host,
     room_get_by_code
@@ -13,7 +13,7 @@ from .services import (
 @require_POST
 @spotify_login_required()
 def room_create_view(request):
-    return redirect('room', code=room_create_or_get_existing_code(request))
+    return redirect('room', code=room_create_or_update(request))
 
 
 @require_POST
