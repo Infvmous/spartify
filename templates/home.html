@@ -3,19 +3,19 @@
 
 {% block content %}
     <div class="card text-center text-white bg-dark">
-        <div class="card-body">
+        <div class="card-body mx-5 my-3">
             <form action="{% url 'room_join' %}" method="post">
                 {% csrf_token %}
                 {{ room_join_form|crispy }}
-                <button type="submit" class="btn btn-outline-primary">Join a room</button>
+                <button type="submit" class="btn btn-outline-success">Join a room</button>
             </form>
         </div>
         <div class="card-divider"></div>
-        <div class="card-body">
+        <div class="card-body mx-5 my-3">
             <form action="{% url 'room_create' %}" method="post">
                 {% csrf_token %}
                 {{ room_form|crispy }}
-                <button type="submit" class="btn btn-outline-primary">Create a room</button>
+                <button type="submit" class="btn btn-outline-success">Create a room</button>
             </form>
         </div>
         <div class="card-footer">
