@@ -6,13 +6,13 @@ from .models import Room
 from .forms import RoomForm, RoomJoinForm
 
 
-def room_create_or_update(request: HttpRequest) -> Room.code:
+def room_update_or_create(request: HttpRequest) -> Room.code:
     """
     Creating new room if it doesn't exist,
     Return created room code or existing one
     """
     room = room_get_if_exist(request.session.session_key)
-    return room_update(request, room[0]) if room else room_create(request)
+    return room_update(request, room) if room else room_create(request)
 
 
 def room_get_if_exist(session_key: Room.host) -> QuerySet[Room]:
@@ -24,18 +24,17 @@ def room_get_if_exist(session_key: Room.host) -> QuerySet[Room]:
         return room
 
 
-def room_update(request: HttpRequest, room: Room) -> Room.code:
+def room_update(request: HttpRequest, room: QuerySet) -> Room.code:
     """
     Updating room guest_can_pause and votes_to_skip_song fields
     Return room code
     """
     form = RoomForm(request.POST)
     if form.is_valid():
-        room.guest_can_pause = form.cleaned_data.get('guest_can_pause')
-        room.votes_to_skip_song = form.cleaned_data.get(
-            'votes_to_skip_song')
-        room.save(update_fields=['guest_can_pause', 'votes_to_skip_song'])
-        return room.code
+        room.update(
+            guest_can_pause=form.cleaned_data.get('guest_can_pause'),
+            votes_to_skip_song=form.cleaned_data.get('votes_to_skip_song'))
+        return room[0].code
 
 
 def room_create(request: HttpRequest) -> Room.code:
