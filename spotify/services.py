@@ -11,10 +11,9 @@ from config.settings import (
     SPOTIFY_REDIRECT_URI,
     SPOTIFY_CLIENT_ID,
     SPOTIFY_CLIENT_SECRET,
-    SPOTIFY_SCOPES
+    SPOTIFY_SCOPES,
+    SPOTIFY_API_URL = 'https://api.spotify.com/v1/me/'
 )
-
-SPOTIFY_API_URL = 'https://api.spotify.com/v1/me/'
 
 
 def spotify_send_request(
